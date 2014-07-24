@@ -1,0 +1,17 @@
+{
+  "name": "procusto",
+  "version": "1.0.0",
+  "description": "Proyecto de investigacion Arduino",
+  "main": "server.js",
+  "dependencies": {
+    "serialport": "~1.4.0",
+    "socket.io": "~1.0.6"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "test",
+    "start": "node server.js"
+  },
+  "author": "Hexacta",
+  "license": "BSD-2-Clause"
+}

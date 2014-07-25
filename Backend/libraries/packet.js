@@ -13,28 +13,38 @@ var Packet = {
 };		
 
 var codes = {
-	"00":"Sync",
-	"01":"Temperature",
-	"02":"Sound"
+	"00": {
+		description: "Sync"	
+	},
+	"01": {
+		description: "Temperature",
+		unit:"°c"
+	},
+	"02":{
+		description: "Humidity",
+		unit:"%"
+	},
+	"03":{
+		description: "Sound",
+		unit:"db"
+	}
 };
-
-function Temperature(packetObject) {
-	return packetObject["centigrades"] = (5.0 * packetObject.value * 100.0) / 1024;
-}
 
 module.exports = {
 	parse: function (packet) {
 		var data = packet.split("|");
-		
-		console.log("code",data[1]);
+
+		if (data.length == 0)
+			return null;
+
 		var packetObject = {
 			device: data[0],
 			code: data[1],
 			value: data[2],
+			description: (codes[data[1]]).description,
+			unit: (codes[data[1]]).unit,
 			datetime: new Date().getTime()
 		};
-
-		eval(codes[packetObject.code])(packetObject);
 
 		return packetObject;
 	}

@@ -43,9 +43,6 @@ void setup(){
   Mirf.channel = 90;
   Mirf.config();
   Mirf.configRegister(RF_SETUP,0x06); // 1MHz
-  
-  Serial.println("Iniciando..."); 
-  
 }
 
 void transmit(char *string){

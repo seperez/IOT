@@ -66,7 +66,7 @@ grunt test
 ```
 
 ## Build the client app
-The app made up of a number of javascript, css and html files that need to be merged into a final distribution for running (/build).  We use the Grunt default tool to do this.
+The app made up of a number of javascript, css and html files that need to be merged into a final distribution for running (/public/dist).  We use the Grunt default tool to do this.
 
 * Build client application:
 

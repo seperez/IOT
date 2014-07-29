@@ -1,32 +1,30 @@
-var Packet = require("./libraries/packet");
-var serialport = require("serialport");
-var SerialPort = serialport.SerialPort;
+'use strict';
+/**
+ * Module dependencies.
+ */
+var init = require('./config/init')(),
+	config = require('./config/config'),
+	mongoose = require('mongoose');
 
-var sp = new SerialPort("COM5", {
-    baudrate: 9600,
-    parser: serialport.parsers.readline("#")
-});
+/**
+ * Main application entry file.
+ * Please note that the order of loading is important.
+ */
 
-sp.on("open", function () {
-    console.log('\nConnection open...\n');
-    sp.on('data', function(responsePacket) {
-        var myPacket = {},
-            datetime = "",
-            message = "";
+// Bootstrap db connection
+var db = mongoose.connect(config.db);
 
-        myPacket = Packet.parse(responsePacket);
+// Init the express application
+var app = require('./config/express')(db);
 
-        if(myPacket){
-            datetime = new Date(myPacket.datetime);  
+// Bootstrap passport config
+require('./config/passport')();
 
-            var day = datetime.getDate() + "/" + datetime.getMonth() + "/" + datetime.getFullYear();
-            var hours =  (datetime.getHours() < 10) ? '0' + datetime.getHours() : datetime.getHours(); 
-            var minutes =  (datetime.getMinutes() < 10) ? '0' + datetime.getMinutes() : datetime.getMinutes(); 
-            var seconds =  (datetime.getSeconds() < 10) ? '0' + datetime.getSeconds() : datetime.getSeconds(); 
-            var fullDay = day + " " + hours + ":" + minutes + ":" + seconds;
+// Start the app by listening on <port>
+app.listen(config.port);
 
-            message = "Nueva Medicion [" + fullDay + "] - equipo: " + myPacket.device + ", " + myPacket.description + ": " + myPacket.value + " " + myPacket.unit;
-            console.log(message);    
-        }
-    });
-});
+// Expose app
+exports = module.exports = app;
+
+// Logging initialization
+console.log('MEAN.JS application started on port ' + config.port);

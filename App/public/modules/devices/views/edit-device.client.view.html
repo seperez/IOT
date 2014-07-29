@@ -1,0 +1,45 @@
+<section data-ng-controller="DevicesController" data-ng-init="findOne()">
+    <div class="page-header">
+        <h1>Edita el dispositivo</h1>
+    </div>
+    <div class="col-md-12">
+        <form class="form-horizontal" data-ng-submit="update()" novalidate>
+            <fieldset>
+                <div class="form-group">
+                    <label class="control-label" for="name">Nombre</label>
+                    <div class="controls">
+                        <input type="text" data-ng-model="device.name" id="name" class="form-control" placeholder="Nombre" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label" for="description">Descripción</label>
+                    <div class="controls">
+                        <textarea data-ng-model="device.description" id="description" class="form-control" placeholder="Descripción"></textarea>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label" for="location">Ubicación</label>
+                    <div class="controls">
+                        <input type="text" data-ng-model="device.location" id="location" class="form-control" placeholder="Ubicación" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label" for="networkAddress">Dirección de Red</label>
+                    <div class="controls">
+                        <input type="text" data-ng-model="device.networkAddress" id="networkAddress" class="form-control" placeholder="Dirección de Red" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <input type="submit" value="Actualizar" class="btn btn-default">
+                </div>
+				<div data-ng-show="error" class="text-danger">
+					<strong data-ng-bind="error"></strong>
+				</div>
+            </fieldset>
+        </form>
+    </div>
+</section>

@@ -1,0 +1,27 @@
+<section data-ng-controller="DevicesController" data-ng-init="findOne()">
+	<div class="page-header">
+		<h1 data-ng-bind="device.name"></h1>
+	</div>
+	<div class="pull-right" data-ng-show="authentication.user._id == device.user._id">
+		<a class="btn btn-primary" href="/#!/devices/{{device._id}}/edit">
+			<i class="glyphicon glyphicon-edit"></i>
+		</a>
+		<a class="btn btn-primary" data-ng-click="remove();">
+			<i class="glyphicon glyphicon-trash"></i>
+		</a>
+	</div>
+	<p>{{device.description}}<p>
+	<p><strong>Ubicación:</strong> {{device.location}}<p>
+	<p><strong>Dirección de red:</strong> {{device.networkAddress}}<p>
+	<small>
+		<em class="text-muted">
+			Creado el
+			<span data-ng-bind="device.created | date:'mediumDate'"></span>
+			por
+			<span data-ng-bind="device.user.displayName"></span>
+		</em>
+	</small>
+	<div class="form-group">
+        <a type="button" class="btn btn-default" href="/#!/devices">Volver</a>
+    </div>
+</section>

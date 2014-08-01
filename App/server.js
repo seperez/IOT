@@ -4,7 +4,9 @@
  */
 var init = require('./config/init')(),
 	config = require('./config/config'),
-	mongoose = require('mongoose');
+	mongoose = require('mongoose'),
+	serialport = require('serialport'),
+	SerialPort = serialport.SerialPort;
 
 /**
  * Main application entry file.
@@ -28,3 +30,24 @@ exports = module.exports = app;
 
 // Logging initialization
 console.log('ProCusto application started on port ' + config.port);
+
+
+// Config a serial port connection with Arduino Server
+var sp = new SerialPort('COM5', {
+    baudrate: 9600,
+    parser: serialport.parsers.readline('#')
+});
+
+// Listen serial port. waiting for packets
+sp.on('open', function () {
+    console.log('\nSerial port connection open...\n');
+	
+	var packet = require('./app/controllers/packet.server.controller.js');
+    
+    sp.on('data', function(responsePacket) {
+    	if(responsePacket.length > 0) {
+    		var myPacket = packet.parse(responsePacket);
+    		packet.create(myPacket);
+    	}	
+    });
+});

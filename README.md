@@ -1,6 +1,6 @@
 # ProCusto
 
-> ProCusto is a measuring station that collects data from noise and temperature to consolidate them in one central location for analysis. Additionally it has the ability to trigger alerts to exceed defined limits.
+> ProCusto is an initiative of Internet Of Things. ProCusto is a measuring station that collects data from noise and temperature to consolidate them in one central location for analysis. Additionally it has the ability to trigger alerts to exceed defined limits.
 
 ## Installation
 ### Platform & tools

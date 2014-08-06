@@ -22,8 +22,8 @@ npm install -g grunt-cli karma bower
 Choose a folder and do the following:
 
 ```
-git clone https://github.com/seperez/procusto.git
-cd procusto
+git clone https://github.com/hexacta/iot.git
+cd iot
 ```
 
 ### Scaffolding
@@ -38,7 +38,7 @@ Arduino: contains the program for the arduino devices both as clients and server
 Once you have the code in your pc, you got to install the dependencies:
  	
 ```
-cd App
+cd site
 npm install
 ```
 
@@ -48,7 +48,7 @@ npm install
 To run the application just do the following:
 	
 ```
-cd App
+cd site
 grunt
 ```
 The application runs on port 3000, then to navigate the site enters 
@@ -61,7 +61,7 @@ http:localhost:3000
 ### Unit Test
 
 ```
-cd App
+cd site
 grunt test
 ```
 
@@ -71,6 +71,6 @@ The app made up of a number of javascript, css and html files that need to be me
 * Build client application:
 
 ```
-cd App
+cd site
 grunt build    
 ```

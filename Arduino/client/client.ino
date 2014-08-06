@@ -11,9 +11,9 @@ LiquidCrystal TFTScreen(9, 6, 5, 4, 3, 2);
 const int TEMP_SENSOR_ANALOG_PIN = A0; //ARDUINO ANALOG PIN
 const int SOUND_SENSOR_ANALOG_PIN = A1;
 
-char DEVICE_ADDRES[7] = "CLI01";
+char DEVICE_ADDRES[7] = "D0001";
 char SERVER_ADDRES[7] = "SERVER";
-char DEVICE[15] = "001"; //DEVICE NUMBER
+char DEVICE[4] = "001"; //DEVICE NUMBER
 
 //INTERNAL VARIABLES
 char SEPARATOR[2] = "|";
@@ -46,19 +46,7 @@ void setup(){
 }
 
 void transmit(char *string){
-  /*
-  byte c;
-  
-  for(int i =0; string[i]!=0x00;i++){
-    c= string[i];
-    Mirf.send(&c);
-    while(Mirf.isSending()){}
-  }
-  */
-  
-  //envia el mensage entero
   Mirf.send((uint8_t*) string);
-  
 } 
 
 char* createPacket(char* code, char* value){
@@ -81,9 +69,20 @@ void loop() {
   char buffer[50];
   char* charPacket;
   boolean isShowC = false;
+  byte data[Mirf.payload];
   
   Mirf.setTADDR((byte *)SERVER_ADDRES);
   
+  //RECEPCION DE PAQUETES DE ALERTA O CONFIGURACION
+  if(!Mirf.isSending() && Mirf.dataReady()){
+    Mirf.getData(data);
+    char message = (char*)data;
+    String code = message[0] + message[1];
+    Serial.println(code);
+    TFTScreen.setCursor(0,1);
+    TFTScreen.print((char*)data);
+  }
+ 
   float c = (5.0 * analogRead(TEMP_SENSOR_ANALOG_PIN) * 100.0) / 1024;
   double db =  20.0  * log10 (analogRead(SOUND_SENSOR_ANALOG_PIN)  +1.);
   
@@ -100,13 +99,13 @@ void loop() {
   } 
   
   if(!isnan(db)){
-    TFTScreen.setCursor(0,1);
+    TFTScreen.setCursor(7,0);
     TFTScreen.print(db);
-    TFTScreen.setCursor(4,1);
+    TFTScreen.setCursor(11,0);
     TFTScreen.print("db");
     
     charPacket = createPacket("03", dtostrf(db, 5, 2, buffer));   
-    transmit(charPacket);
+    //transmit(charPacket);
   } 
 }
 

@@ -9,10 +9,15 @@ module.exports = function(app) {
 		.get(devices.list)
 		.post(users.requiresLogin, devices.create);
 
+	// app.route('/devices/:deviceId')
+	// 	.get(devices.read)
+	// 	.put(users.requiresLogin, devices.hasAuthorization, devices.update)
+	// 	.delete(users.requiresLogin, devices.hasAuthorization, devices.delete);
+
 	app.route('/devices/:deviceId')
 		.get(devices.read)
-		.put(users.requiresLogin, devices.hasAuthorization, devices.update)
-		.delete(users.requiresLogin, devices.hasAuthorization, devices.delete);
+		.put(users.requiresLogin, devices.update)
+		.delete(users.requiresLogin, devices.delete);
 
 	// Finish by binding the Device middleware
 	app.param('deviceId', devices.deviceByID);

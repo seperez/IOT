@@ -45,9 +45,12 @@ sp.on('open', function () {
 	var packet = require('./app/controllers/packet.server.controller.js');
     
     sp.on('data', function(responsePacket) {
-    	if(responsePacket.length > 0) {
+        
+        if(responsePacket.length > 0) {
     		var myPacket = packet.parse(responsePacket);
-    		packet.create(myPacket);
+            console.log(myPacket);
+
+    		//packet.create(myPacket);
     	}	
     });
 });

@@ -38,4 +38,9 @@ var DeviceSchema = new Schema({
 	}
 });
 
+DeviceSchema.methods.findByNetworkAddress = function (cb) {
+  return this.model('Device').find({ networkAddress: this.networkAddress }, cb);
+};
+
 mongoose.model('Device', DeviceSchema);
+

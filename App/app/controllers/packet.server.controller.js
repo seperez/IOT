@@ -5,6 +5,7 @@
  */
 var mongoose = require('mongoose'),
 	Packet = mongoose.model('Packet'),
+	Device = mongoose.model('Device'),
     _ = require('lodash');
 
 /**
@@ -35,15 +36,23 @@ var getErrorMessage = function(err) {
  * Create a Packet
  */
 exports.create = function(req,res) {
-	//console.log(req);
+console.log('req',req);	
 	var packet = new Packet(req);
-	//console.log(packet);
-	packet.save(function(err) {
-		if (err) {
-			console.log(err);			
-		} else {
-			console.log(packet);
-		}
+	var myDevice = new Device({ networkAddress: req.device });
+	console.log('Equipo1: ', myDevice);
+	
+	myDevice.findByNetworkAddress(function (err, device) {
+		console.log('Equipo2: ', device);
+		packet.device = device.id;
+		console.log('Paquete', packet);
+
+		// packet.save(function(err) {
+		// 	if (err) {
+		// 		console.log(err);			
+		// 	} else {
+		// 		console.log(packet);
+		// 	}
+		// });
 	});
 };
 
@@ -70,34 +79,34 @@ exports.list = function(req, res) {
 };
 
 exports.parse = function (packet) {
-	var data = packet.split("|");
+	var data = packet.split('|');
 
-	if (data.length == 0)
+	if (data.length === 0)
 		return null;
 
 	var packetObject = {
-		device: Packet.findById(req.params.id) data[0],
+		device: data[0],
 		type: data[1],
 		value: data[2]
 	};
 
 	return packetObject;
-}
+};
 
 var codes = {
-	"00": {
-		description: "Sync"	
+	'00': {
+		description: 'Sync'	
 	},
-	"01": {
-		description: "Temperature",
-		unit:"°c"
+	'01': {
+		description: 'Temperature',
+		unit:'°c'
 	},
-	"02":{
-		description: "Humidity",
-		unit:"%"
+	'02':{
+		description: 'Humidity',
+		unit:'%'
 	},
-	"03":{
-		description: "Sound",
-		unit:"db"
+	'03':{
+		description: 'Sound',
+		unit:'db'
 	}
 };

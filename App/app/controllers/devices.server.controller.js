@@ -95,7 +95,7 @@ exports.delete = function(req, res) {
 /**
  * List of Devices
  */
-exports.list = function(req, res) { Device.find().sort('-created').populate('user', 'displayName').exec(function(err, devices) {
+exports.list = function(req, res) { Device.find().sort('-created').populate('device', 'name').exec(function(err, devices) {
 		if (err) {
 			return res.send(400, {
 				message: getErrorMessage(err)
@@ -109,7 +109,7 @@ exports.list = function(req, res) { Device.find().sort('-created').populate('use
 /**
  * Device middleware
  */
-exports.deviceByID = function(req, res, next, id) { Device.findById(id).populate('user', 'displayName').exec(function(err, device) {
+exports.deviceByID = function(req, res, next, id) { Device.findById(id).populate('device', 'name').exec(function(err, device) {
 		if (err) return next(err);
 		if (! device) return next(new Error('Failed to load Device ' + id));
 		req.device = device ;
@@ -126,3 +126,4 @@ exports.hasAuthorization = function(req, res, next) {
 	}
 	next();
 };
+

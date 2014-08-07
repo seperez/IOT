@@ -59,6 +59,7 @@ void loop(){
     }else{
       Serial.print(serialWord);
       charPacket = createPacket("01", serialWord);   
+      Mirf.payload = 20;
       Mirf.setTADDR((byte *)"D0001");
       transmit(charPacket);
       serialWord = "";

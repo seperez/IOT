@@ -38,7 +38,7 @@ void setup(){
   Mirf.spi = &MirfHardwareSpi;
   Mirf.init();
   Mirf.setRADDR((byte *)DEVICE_ADDRES);
-  Mirf.payload = 13;
+  Mirf.payload = 20;
   
   Mirf.channel = 90;
   Mirf.config();
@@ -69,18 +69,36 @@ void loop() {
   char buffer[50];
   char* charPacket;
   boolean isShowC = false;
-  byte data[Mirf.payload];
+  byte data[20];
   
   Mirf.setTADDR((byte *)SERVER_ADDRES);
   
   //RECEPCION DE PAQUETES DE ALERTA O CONFIGURACION
   if(!Mirf.isSending() && Mirf.dataReady()){
     Mirf.getData(data);
-    char message = (char*)data;
-    String code = message[0] + message[1];
-    Serial.println(code);
-    TFTScreen.setCursor(0,1);
-    TFTScreen.print((char*)data);
+    char* packet = (char*)data;
+    
+    //Obtengo el código de acción
+    int len = 2;
+    char code[len+1];
+    strncpy(code, &packet[0], len);
+    code[len] = '\0';
+    
+    //Obtengo el valor del mensaje
+    len = 30;
+    char message[len+1];
+    strncpy(message, &packet[2], len);
+    message[len] = '\0';
+  
+    if(code[0] == '0' && code[1] == '1'){
+      TFTScreen.setCursor(0,1);
+      TFTScreen.print("                ");
+      delay(100);
+      TFTScreen.setCursor(0,1);
+      TFTScreen.print((char*)message);
+    }else if(code[0] == '0' && code[1] == '1'){
+      //TODO: MENSAJE DE CONFIGURACION
+    }
   }
  
   float c = (5.0 * analogRead(TEMP_SENSOR_ANALOG_PIN) * 100.0) / 1024;

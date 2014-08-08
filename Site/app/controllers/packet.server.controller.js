@@ -43,7 +43,7 @@ console.log('req',req);
 	
 	myDevice.findByNetworkAddress(function (err, device) {
 		console.log('Equipo2: ', device);
-		packet.device = device.id;
+		packet.device = device._id;
 		console.log('Paquete', packet);
 
 		// packet.save(function(err) {
@@ -79,6 +79,7 @@ exports.list = function(req, res) {
 };
 
 exports.parse = function (packet) {
+	packet = packet.substr(packet.indexOf("&")+1,packet.length);
 	var data = packet.split('|');
 
 	if (data.length === 0)

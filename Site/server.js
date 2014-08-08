@@ -40,12 +40,11 @@ var sp = new SerialPort('COM5', {
 
 // Listen serial port. waiting for packets
 sp.on('open', function () {
-    console.log('\nSerial port connection open...\n');
+    console.log('\nSerial port connection open on COM5...\n');
 	
 	var packet = require('./app/controllers/packet.server.controller.js');
     
     sp.on('data', function(responsePacket) {
-        
         if(responsePacket.length > 0) {
     		var myPacket = packet.parse(responsePacket);
             console.log(myPacket);

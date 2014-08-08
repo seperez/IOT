@@ -38,7 +38,7 @@ void setup(){
   Mirf.spi = &MirfHardwareSpi;
   Mirf.init();
   Mirf.setRADDR((byte *)DEVICE_ADDRES);
-  Mirf.payload = 20;
+  Mirf.payload = 32;
   
   Mirf.channel = 90;
   Mirf.config();
@@ -52,7 +52,8 @@ void transmit(char *string){
 char* createPacket(char* code, char* value){
     char charPacket [100];  
     String packet = "";
-    packet = DEVICE;
+    packet = "&";
+    packet = packet + DEVICE;
     packet = packet + SEPARATOR;
     packet = packet + code;
     packet = packet + SEPARATOR;
@@ -72,34 +73,6 @@ void loop() {
   byte data[20];
   
   Mirf.setTADDR((byte *)SERVER_ADDRES);
-  
-  //RECEPCION DE PAQUETES DE ALERTA O CONFIGURACION
-  if(!Mirf.isSending() && Mirf.dataReady()){
-    Mirf.getData(data);
-    char* packet = (char*)data;
-    
-    //Obtengo el código de acción
-    int len = 2;
-    char code[len+1];
-    strncpy(code, &packet[0], len);
-    code[len] = '\0';
-    
-    //Obtengo el valor del mensaje
-    len = 30;
-    char message[len+1];
-    strncpy(message, &packet[2], len);
-    message[len] = '\0';
-  
-    if(code[0] == '0' && code[1] == '1'){
-      TFTScreen.setCursor(0,1);
-      TFTScreen.print("                ");
-      delay(100);
-      TFTScreen.setCursor(0,1);
-      TFTScreen.print((char*)message);
-    }else if(code[0] == '0' && code[1] == '1'){
-      //TODO: MENSAJE DE CONFIGURACION
-    }
-  }
  
   float c = (5.0 * analogRead(TEMP_SENSOR_ANALOG_PIN) * 100.0) / 1024;
   double db =  20.0  * log10 (analogRead(SOUND_SENSOR_ANALOG_PIN)  +1.);
@@ -123,8 +96,41 @@ void loop() {
     TFTScreen.print("db");
     
     charPacket = createPacket("03", dtostrf(db, 5, 2, buffer));   
-    //transmit(charPacket);
+    transmit(charPacket);
   } 
+  
+  while(Mirf.isSending()){}
+  
+  //RECEPCION DE PAQUETES DE ALERTA O CONFIGURACION
+  if(!Mirf.isSending() && Mirf.dataReady()){
+    do{
+      Mirf.getData(data);
+      char* packet = (char*)data;
+      Serial.println(packet);
+      
+      //Obtengo el código de acción
+      int len = 2;
+      char code[len+1];
+      strncpy(code, &packet[0], len);
+      code[len] = '\0';
+      
+      //Obtengo el valor del mensaje
+      len = 30;
+      char message[len+1];
+      strncpy(message, &packet[2], len);
+      message[len] = '\0';
+    
+      if(code[0] == '0' && code[1] == '1'){
+        TFTScreen.setCursor(0,1);
+        TFTScreen.print("                ");
+        delay(100);
+        TFTScreen.setCursor(0,1);
+        TFTScreen.print((char*)message);
+      }else if(code[0] == '0' && code[1] == '1'){
+        //TODO: MENSAJE DE CONFIGURACION
+      }
+    }while(!Mirf.rxFifoEmpty());
+  }
 }
 
 

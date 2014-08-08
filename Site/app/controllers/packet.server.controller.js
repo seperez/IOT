@@ -37,22 +37,20 @@ var getErrorMessage = function(err) {
  */
 exports.create = function(req,res) {
 console.log('req',req);	
-	var packet = new Packet(req);
-	var myDevice = new Device({ networkAddress: req.device });
-	console.log('Equipo1: ', myDevice);
 	
-	myDevice.findByNetworkAddress(function (err, device) {
-		console.log('Equipo2: ', device);
-		packet.device = device._id;
-		console.log('Paquete', packet);
-
-		// packet.save(function(err) {
-		// 	if (err) {
-		// 		console.log(err);			
-		// 	} else {
-		// 		console.log(packet);
-		// 	}
-		// });
+	
+	Device.findByNetworkAddress('D0' + req.device, function (err, device) {
+		if(device.length > 0){
+			req.device = device[0]._id;
+			var packet = new Packet(req);
+			packet.save(function(err) {
+				if (err) {
+					console.log(err);			
+				} else {
+					console.log(packet);
+				}
+			});
+		}
 	});
 };
 
@@ -79,7 +77,7 @@ exports.list = function(req, res) {
 };
 
 exports.parse = function (packet) {
-	packet = packet.substr(packet.indexOf("&")+1,packet.length);
+	packet = packet.substr(packet.indexOf('&')+1,packet.length);
 	var data = packet.split('|');
 
 	if (data.length === 0)

@@ -49,7 +49,7 @@ sp.on('open', function () {
     		var myPacket = packet.parse(responsePacket);
             console.log(myPacket);
 
-    		//packet.create(myPacket);
+    		packet.create(myPacket);
     	}	
     });
 });

@@ -8,7 +8,7 @@
 LiquidCrystal TFTScreen(9, 6, 5, 4, 3, 2);
 
 //CONFIGURATION
-const int TEMP_SENSOR_ANALOG_PIN = A0; //ARDUINO ANALOG PIN
+const int TEMP_SENSOR_ANALOG_PIN = A0; 
 const int SOUND_SENSOR_ANALOG_PIN = A1;
 
 char DEVICE_ADDRES[7] = "D0001";
@@ -28,7 +28,7 @@ float prevC = 150,
 
 void setup(){
   Serial.begin(9600);
-
+ 
   TFTScreen.begin(16, 2);
   TFTScreen.print("Iniciando");
   delay(1000);
@@ -104,7 +104,7 @@ void loop() {
       
       charPacket = createPacket("03", dtostrf(db, 5, 2, buffer));   
       transmit(charPacket);
-    } 
+    }
   }
   
   while(Mirf.isSending()){}
@@ -140,6 +140,7 @@ void loop() {
       }else if(code[0] == '1' && code[1] == '0'){
         //Temperature Sensing
         temperatureSensing = !temperatureSensing;
+        prevC = 150;
       }else if(code[0] == '1' && code[1] == '1'){
         //Humidity Sensing
         humiditySensing = !humiditySensing;

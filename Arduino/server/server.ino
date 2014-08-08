@@ -19,11 +19,10 @@ void transmit(char *string){
   Mirf.send((uint8_t*) string);
 } 
 
-char* createPacket(char* code, String value){
+char* createPacket(String value){
     char charPacket [100];  
     String packet = "";
-    packet = code;
-    packet = packet + value;
+    packet = value;
     strcpy(charPacket, packet.c_str());
     return charPacket;
  };
@@ -54,7 +53,7 @@ void loop(){
     if(serialData != 35){
       serialWord = serialWord + (char) serialData;
     }else{
-      charPacket = createPacket("01", serialWord);   
+      charPacket = createPacket(serialWord);   
       Mirf.setTADDR((byte *)"D0001");
       transmit(charPacket);
       serialWord = "";

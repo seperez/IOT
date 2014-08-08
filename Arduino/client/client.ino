@@ -15,6 +15,10 @@ char DEVICE_ADDRES[7] = "D0001";
 char SERVER_ADDRES[7] = "SERVER";
 char DEVICE[4] = "001"; //DEVICE NUMBER
 
+boolean temperatureSensing = true;
+boolean humiditySensing = false;
+boolean soundSensing = false;
+
 //INTERNAL VARIABLES
 char SEPARATOR[2] = "|";
 char END_OF_PACKET[2] = "#";
@@ -73,31 +77,35 @@ void loop() {
   byte data[20];
   
   Mirf.setTADDR((byte *)SERVER_ADDRES);
- 
-  float c = (5.0 * analogRead(TEMP_SENSOR_ANALOG_PIN) * 100.0) / 1024;
-  double db =  20.0  * log10 (analogRead(SOUND_SENSOR_ANALOG_PIN)  +1.);
   
-  if(!isnan(c) && (c > (prevC + toleranceC) || c < (prevC - toleranceC))){
-    prevC = c;
+  if(temperatureSensing){
+    float c = (5.0 * analogRead(TEMP_SENSOR_ANALOG_PIN) * 100.0) / 1024;
     
-    TFTScreen.setCursor(0,0);
-    TFTScreen.print(c);
-    TFTScreen.setCursor(5,0);
-    TFTScreen.print("c");
-    
-    charPacket = createPacket("01", dtostrf(c, 5, 2, buffer));   
-    transmit(charPacket);
-  } 
+    if(!isnan(c) && (c > (prevC + toleranceC) || c < (prevC - toleranceC))){
+      prevC = c;
+      
+      TFTScreen.setCursor(0,0);
+      TFTScreen.print(c);
+      TFTScreen.setCursor(5,0);
+      TFTScreen.print("c");
+      
+      charPacket = createPacket("01", dtostrf(c, 5, 2, buffer));   
+      transmit(charPacket);
+    }
+  }
   
-  if(!isnan(db)){
-    TFTScreen.setCursor(7,0);
-    TFTScreen.print(db);
-    TFTScreen.setCursor(11,0);
-    TFTScreen.print("db");
-    
-    charPacket = createPacket("03", dtostrf(db, 5, 2, buffer));   
-    transmit(charPacket);
-  } 
+  if(soundSensing){
+    double db =  20.0  * log10 (analogRead(SOUND_SENSOR_ANALOG_PIN)  +1.);
+    if(!isnan(db)){
+      TFTScreen.setCursor(7,0);
+      TFTScreen.print(db);
+      TFTScreen.setCursor(11,0);
+      TFTScreen.print("db");
+      
+      charPacket = createPacket("03", dtostrf(db, 5, 2, buffer));   
+      transmit(charPacket);
+    } 
+  }
   
   while(Mirf.isSending()){}
   
@@ -126,9 +134,20 @@ void loop() {
         delay(100);
         TFTScreen.setCursor(0,1);
         TFTScreen.print((char*)message);
-      }else if(code[0] == '0' && code[1] == '1'){
-        //TODO: MENSAJE DE CONFIGURACION
+      }else if(code[0] == '0' && code[1] == '2'){
+        //Clear TFT
+        TFTScreen.clear();
+      }else if(code[0] == '1' && code[1] == '0'){
+        //Temperature Sensing
+        temperatureSensing = !temperatureSensing;
+      }else if(code[0] == '1' && code[1] == '1'){
+        //Humidity Sensing
+        humiditySensing = !humiditySensing;
+      }else if(code[0] == '1' && code[1] == '2'){
+        //Sound Sensing
+        soundSensing = !soundSensing;
       }
+      
     }while(!Mirf.rxFifoEmpty());
   }
 }
